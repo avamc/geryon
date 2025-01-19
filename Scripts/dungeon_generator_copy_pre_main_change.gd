@@ -64,17 +64,24 @@ func generate_rooms():
 		var typeChance = randf() #generate random number
 		
 		if not currentRoom.completed: #make sure the room isn't completed
+			
+			print("generating room: ", (rooms.size() + 1))
+			if currentRoom.first_room:
+				print("generating from first room")
+			
+			typeChance = 0.2
+			
 			match currentRoom.roomType:
-				
 				#GENERATE ROOM(S) FROM MAIN
 				currentRoom.RoomType.MAIN: #30% chance of a branch. Branches into a MAIN & BRANCH
 
 					if typeChance >= main_branch_chance and not main_rooms_completed: #Branch
-						#print("branching into branch and main")
+						print("branching into branch and main")
 						currentRoom.branches = true
 						var nextBranchRoom = Room.new(1) #branch type
 						var nextMainRoom = Room.new(0) #main type
 						#set neighbors
+						print("adding branch neighbor")
 						if currentRoom.set_neighbor(nextBranchRoom, rooms):
 							print("neighbor set")
 							#neighbor set successfully
@@ -83,25 +90,27 @@ func generate_rooms():
 						else:
 							print("neighbor not set")
 						
+						print("adding main neighbor")
 						if currentRoom.set_neighbor(nextMainRoom, rooms):
 							print("neighbor set")
 							main_rooms.append(nextMainRoom)
 							rooms.append(nextMainRoom)
 							num_main_rooms += 1
 						else:
-							print("neighbor not set")
+							print("neighbor not set, 1")
 						
 					if typeChance <= main_branch_chance and not main_rooms_completed: #Don't Branch. Still create new main room
-						#print("no branch, creating new main room")
+						print("no branch, creating new main room")
 						currentRoom.branches = false
 						var nextMainRoom = Room.new(0)
 						#set neighbor
+						print("adding main neighbor")
 						if currentRoom.set_neighbor(nextMainRoom, rooms):
 							rooms.append(nextMainRoom)
 							main_rooms.append(nextMainRoom)
 							num_main_rooms += 1
 						else:
-							print("neighbor not set")
+							print("neighbor not set, 2")
 
 				#GENERATE ROOM(S) FROM BRANCH
 				currentRoom.RoomType.BRANCH: #20% chance of a branch
